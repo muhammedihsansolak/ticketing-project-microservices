@@ -1,0 +1,67 @@
+version: '2.1'
+services:
+  database:
+    restart: "no"
+    image: postgres:latest
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "ticketing-app"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    networks:
+      backend:
+        aliases:
+          - "database"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  userservice:
+    image: ${GROUP_ID}/user-service:${SERVICE_VERSION:-latest}
+    environment:
+      - "PROFILE=dev"
+      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "9090:9090"
+    networks:
+      - backend
+  projectservice:
+    image: ${GROUP_ID}/project-service:${SERVICE_VERSION:-latest}
+    environment:
+      - "PROFILE=dev"
+      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "9091:9091"
+    networks:
+      - backend
+  taskservice:
+    image: ${GROUP_ID}/task-service:${SERVICE_VERSION:-latest}
+    environment:
+      - "PROFILE=dev"
+      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+    networks:
+      - backend
+  discovery-service:
+    image: ${GROUP_ID}/discovery-service:${SERVICE_VERSION:-latest}
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge

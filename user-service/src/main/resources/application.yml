@@ -19,3 +19,31 @@ spring:
     initialization-mode: always
 server:
   port: 9090
+
+eureka:
+  instance:
+    status-page-url-path: ${management.context-path}/info
+    health-check-url-path: ${management.context-path}/health
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+
+
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  context-path: http://localhost:${server.port}/actuator
+
+
+info:
+  application:
+    name: ${spring.application.name}
+    description: Ticketing Application
+    version: '@project.version@'
+    spring-cloud-version: '@spring-cloud.version@'
+    spring-boot-version: '@project.parent.version@'
