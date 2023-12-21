@@ -12,6 +12,7 @@
         <module>task-service</module>
         <module>app-client-management</module>
         <module>discovery-service</module>
+        <module>gateway-service</module>
     </modules>
 
     <parent>
@@ -87,12 +88,17 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-                <version>${spring-cloud.version}}</version>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>${spring-cloud.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-                <version>${spring-cloud.version}}</version>
+                <version>${spring-cloud.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
