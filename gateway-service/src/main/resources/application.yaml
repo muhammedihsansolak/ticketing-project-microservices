@@ -1,0 +1,60 @@
+server:
+  port: 8762
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/cydeo/dev/user/**
+          filters:
+            - RewritePath=/cydeo/dev/user/(?<segment>.*),/$\{segment}
+        - id: project-service
+          uri: lb://project-service
+          predicates:
+            - Path=/cydeo/dev/project/**
+          filters:
+            - RewritePath=/cydeo/dev/project/(?<segment>.*),/$\{segment}
+        - id: task-service
+          uri: lb://task-service
+          predicates:
+            - Path=/cydeo/dev/task/**
+          filters:
+            - RewritePath=/cydeo/dev/task/(?<segment>.*),/$\{segment}
+
+
+eureka:
+  instance:
+    status-page-url-path: ${management.context-path}/info
+    health-check-url-path: ${management.context-path}/health
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+
+
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  context-path: http://localhost:${server.port}/actuator
+
+
+info:
+  application:
+    name: ${spring.application.name}
+    description: Ticketing Application
+    version: '@project.version@'
+    spring-cloud-version: '@spring-cloud.version@'
+    spring-boot-version: '@project.parent.version@'

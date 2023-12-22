@@ -62,6 +62,17 @@ services:
       - "8761:8761"
     networks:
       - backend
+  gateway-service:
+    image: ${GROUP_ID}/gateway-service:${SERVICE_VERSION:-latest}
+    ports:
+      - "8762:8762"
+    depends_on:
+      - discovery-service
+      - userservice
+      - projectservice
+      - taskservice
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge
