@@ -29,7 +29,11 @@ spring:
             - Path=/cydeo/dev/task/**
           filters:
             - RewritePath=/cydeo/dev/task/(?<segment>.*),/$\{segment}
-
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://host.docker.internal:9411
 
 eureka:
   instance:

@@ -1,6 +1,11 @@
 spring:
   application:
-    name: ticketing-project-rest
+    name: user-service
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://host.docker.internal:9411
   profiles:
     active: default
 
@@ -18,7 +23,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
 server:
-  port: 9090
+  port: 9093
 
 eureka:
   instance:

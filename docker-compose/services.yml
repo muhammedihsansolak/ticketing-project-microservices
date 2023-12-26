@@ -29,7 +29,7 @@ services:
       database:
         condition: service_healthy
     ports:
-      - "9090:9090"
+      - "9093:9093"
     networks:
       - backend
   projectservice:
@@ -71,6 +71,34 @@ services:
       - userservice
       - projectservice
       - taskservice
+    networks:
+      - backend
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - backend
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+    networks:
+      - backend
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc1
+    depends_on:
+      - prometheus
     networks:
       - backend
 networks:
