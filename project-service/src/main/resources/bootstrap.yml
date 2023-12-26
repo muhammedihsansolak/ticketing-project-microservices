@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: project-service
+  profiles:
+    active: project_service
+  cloud:
+    config:
+      name: config-client
+      uri: http://configserver:8888
+      fail-fast: true
+      retry:
+        max-attempts: 200
+        max-interval: 10000

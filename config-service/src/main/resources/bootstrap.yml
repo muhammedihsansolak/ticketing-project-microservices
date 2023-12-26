@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/muhammedihsansolak/ticketing-project-microservices-config.git
+          default-label: master
+          username: Muhammed ihsan solak
+          password: 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
+      fail-fast: true
+
+server:
+  port: 8888

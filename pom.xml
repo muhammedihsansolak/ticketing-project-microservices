@@ -13,6 +13,7 @@
         <module>app-client-management</module>
         <module>discovery-service</module>
         <module>gateway-service</module>
+        <module>config-service</module>
     </modules>
 
     <parent>
@@ -154,6 +155,16 @@
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-core</artifactId>
                 <version>${micrometer-registry-prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-server</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-client</artifactId>
+                <version>${spring-cloud.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -24,22 +24,44 @@ services:
     image: ${GROUP_ID}/user-service:${SERVICE_VERSION:-latest}
     environment:
       - "PROFILE=dev"
-      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+      - "CONFIGSERVER_URI=http://configserver:8888"
+      - "CONFIGSERVER_PORT=8888"
+      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx1g"
     depends_on:
       database:
         condition: service_healthy
+      configserver:
+        condition: service_started
+    restart: on-failure
     ports:
       - "9093:9093"
     networks:
       - backend
+  #  userservice2:
+  #    image: ${GROUP_ID}/user-service:${SERVICE_VERSION:-latest}
+  #    environment:
+  #      - "PROFILE=dev"
+  #      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+  #    depends_on:
+  #      database:
+  #        condition: service_healthy
+  #    ports:
+  #      - "9093:9093"
+  #    networks:
+  #      - backend
   projectservice:
     image: ${GROUP_ID}/project-service:${SERVICE_VERSION:-latest}
     environment:
       - "PROFILE=dev"
-      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
+      - "CONFIGSERVER_URI=http://configserver:8888"
+      - "CONFIGSERVER_PORT=8888"
+      - "JAVA_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx1g"
     depends_on:
       database:
         condition: service_healthy
+      configserver:
+        condition: service_started
+    restart: on-failure
     ports:
       - "9091:9091"
     networks:
@@ -101,6 +123,15 @@ services:
       - prometheus
     networks:
       - backend
+  configserver:
+    image: ${GROUP_ID}/config-server:${SERVICE_VERSION:-latest}
+    ports:
+      - "8888:8888"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+
 networks:
   backend:
     driver: bridge
