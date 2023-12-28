@@ -18,7 +18,7 @@ contributing to project execution and success.</ul>
 
 ### Technical Information
 <ul style="list-style-type:disc">
-<li>Built on Spring Boot, this microservices project employs Spring Cloud API Gateway, Netflix Eureka for service discovery, Resilience4j for fault tolerance, Prometheus and Grafana for monitoring, Sleuth and Zipkin for distributed tracing, and Spring Cloud Config Server with GitHub integration. Utilizing Maven, PostgreSQL, JPA with Hibernate, and OAuth2 security via Keycloak, the RESTful APIs are documented using OpenAPI 3.0. This comprehensive stack ensures resilience, scalability, and secure, efficient communication</li>
+<li>Built on Spring Boot, this microservices project uses Spring Cloud API Gateway, Netflix Eureka for service discovery, Resilience4j for fault tolerance, Prometheus and Grafana for monitoring, Sleuth and Zipkin for distributed tracing, and Spring Cloud Config Server with GitHub integration. Using Maven, PostgreSQL, JPA with Hibernate, and OAuth2 security via Keycloak, the RESTful APIs are documented using OpenAPI 3.0. This total stack provides resilience, scalability, and secure, efficient communication.</li>
 </ul>
 
 ### Technologies
