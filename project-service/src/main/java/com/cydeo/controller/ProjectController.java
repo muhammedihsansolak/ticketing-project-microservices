@@ -1,24 +1,29 @@
 package com.cydeo.controller;
 
 import com.cydeo.dto.ProjectDTO;
+import com.cydeo.dto.UserDTO;
+import com.cydeo.dto.UserResponseDTO;
 import com.cydeo.entity.ResponseWrapper;
+import com.cydeo.entity.User;
 import com.cydeo.exception.ProjectServiceException;
 import com.cydeo.service.ProjectService;
+import com.cydeo.service.UserServiceClient;
+import com.cydeo.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/project")
 public class ProjectController {
 
     private final ProjectService projectService;
-
-    public ProjectController(ProjectService projectService) {
-        this.projectService = projectService;
-    }
+    private final UserServiceClient userServiceClient;
+    private final MapperUtil mapper;
 
     @GetMapping
     public ResponseEntity<ResponseWrapper> getProjects(){
@@ -65,4 +70,19 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("Project is successfully completed",HttpStatus.OK));
 
     }
+
+    @GetMapping("/manager/read-all-by-assigned-manager/{username}")
+    public ResponseEntity<ResponseWrapper> readAllByAssignedManager(@PathVariable("username")String username){
+        UserDTO userDTO = userServiceClient.getUserDTOByUserName(username).data;
+        User user = mapper.convert(userDTO, new User());
+
+        return ResponseEntity.ok(ResponseWrapper.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Projects are successfully retrieved")
+                .data(projectService.readAllByAssignedManager(user))
+                .build()
+        );
+    }
+
 }

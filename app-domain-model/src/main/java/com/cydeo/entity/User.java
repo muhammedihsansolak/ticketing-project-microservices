@@ -13,11 +13,13 @@ import com.cydeo.enums.Gender;
 @Entity
 @Table(name = "users")
 @Where(clause = "is_deleted=false")
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer"},ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseEntity {
 
     private String firstName;
     private String lastName;
+
+    @Column(unique = true)
     private String userName;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

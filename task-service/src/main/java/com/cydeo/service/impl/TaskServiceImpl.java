@@ -3,14 +3,17 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
+import com.cydeo.dto.UserResponseDTO;
 import com.cydeo.entity.Project;
 import com.cydeo.entity.Task;
 import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.respository.TaskRepository;
 import com.cydeo.service.TaskService;
-import com.cydeo.service.UserClientService;
+import com.cydeo.service.UserServiceClient;
 import com.cydeo.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,24 +22,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final MapperUtil mapperUtil;;
-    private final UserClientService userClientService;
+    private final UserServiceClient userClientService;
 
-    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil, UserClientService userClientService) {
-        this.taskRepository = taskRepository;
-        this.mapperUtil = mapperUtil;
-        this.userClientService = userClientService;
-    }
 
     @Override
     public TaskDTO findById(Long id) {
 
         Optional<Task> task = taskRepository.findById(id);
         if(task.isPresent()){
-//            return taskMapper.convertToDTO(task.get());
             return mapperUtil.convert(task.get(),new TaskDTO());
         }
         return null ;
@@ -111,8 +109,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
-
-        User loggedInUser = mapperUtil.convert(userClientService.getUserDTOByUserName("john@employee.com"),new User());
+        UserDTO user = userClientService.getUserDTOByUserName("john@employee.com").data;
+        User loggedInUser = mapperUtil.convert(user ,new User());
 
         List<Task> list = taskRepository.findAllByTaskStatusIsNotAndAssignedEmployee(status, loggedInUser);
         return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());

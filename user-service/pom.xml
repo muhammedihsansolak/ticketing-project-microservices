@@ -19,7 +19,10 @@
             <groupId>com.cydeo</groupId>
             <artifactId>app-domain-model</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.cydeo</groupId>
+            <artifactId>app-client-management</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

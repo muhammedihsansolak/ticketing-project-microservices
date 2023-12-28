@@ -1,11 +1,16 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.ProjectDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.exception.UserServiceException;
 import com.cydeo.repository.UserRepository;
+import com.cydeo.service.ProjectServiceClient;
+import com.cydeo.service.TaskServiceClient;
 import com.cydeo.service.UserService;
 import com.cydeo.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final ProjectServiceClient projectServiceClient;
+    private final TaskServiceClient taskServiceClient;
+    private final UserRepository userRepository;
+    private final MapperUtil mapperUtil;
 
-
-    private UserRepository userRepository;
-    private MapperUtil mapperUtil;
-
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil) {
-        this.userRepository = userRepository;
-        this.mapperUtil = mapperUtil;
-    }
 
     @Override
     public List<UserDTO> listAllUsers() {
@@ -84,10 +86,10 @@ public class UserServiceImpl implements UserService {
         if(user == null){
             throw new UserServiceException("User Does Not Exists");
         }
-//
-//        if(!checkIfUserCanBeDeleted(user)){
-//            throw new TicketingProjectException("User can not be deleted. It is linked by a project ot task");
-//        }
+
+        if(!checkIfUserCanBeDeleted(user)){
+            throw new RuntimeException("User can not be deleted. It is linked by a project or task");
+        }
 
         user.setUserName(user.getUserName() + "-" + user.getId());
 
@@ -108,20 +110,20 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(obj -> {return mapperUtil.convert(obj,new UserDTO());}).collect(Collectors.toList());
     }
 
-//    @Override
-//    public Boolean checkIfUserCanBeDeleted(User user) {
-//
-//        switch(user.getRole().getDescription()){
-//            case "Manager":
-//                List<ProjectDTO> projectList = projectService.readAllByAssignedManager(user);
-//                return projectList.size() == 0;
-//            case "Employee":
-//                List<TaskDTO> taskList = taskService.readAllByEmployee(user);
-//                return taskList.size() == 0;
-//            default:
-//                return true;
-//        }
-//    }
+    private Boolean checkIfUserCanBeDeleted(User user) {
+        String userName = user.getUserName();
+
+        switch(user.getRole().getDescription()){
+            case "Manager":
+                List<ProjectDTO> projectList = projectServiceClient.readAllByAssignedManager(userName).data;
+                return projectList.size() == 0;
+            case "Employee":
+                List<TaskDTO> taskList = taskServiceClient.readAllByEmployee(userName).data;
+                return taskList.size() == 0;
+            default:
+                return true;
+        }
+    }
 
     @Override
     public UserDTO confirm(User user) {

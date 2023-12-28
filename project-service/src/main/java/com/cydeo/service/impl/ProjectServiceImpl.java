@@ -10,9 +10,10 @@ import com.cydeo.enums.Status;
 import com.cydeo.exception.ProjectServiceException;
 import com.cydeo.repository.ProjectRepository;
 import com.cydeo.service.ProjectService;
-import com.cydeo.service.UserClientService;
+import com.cydeo.service.UserServiceClient;
 import com.cydeo.util.MapperUtil;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,17 +21,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
     private ProjectRepository projectRepository;
     private MapperUtil mapperUtil;
-    private UserClientService userClientService;
+    private UserServiceClient userClientService;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, MapperUtil mapperUtil, UserClientService userClientService) {
-        this.projectRepository = projectRepository;
-        this.mapperUtil = mapperUtil;
-        this.userClientService = userClientService;
-    }
 
     @Override
     public ProjectDTO getByProjectCode(String code) {

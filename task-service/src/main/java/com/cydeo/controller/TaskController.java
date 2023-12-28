@@ -1,9 +1,14 @@
 package com.cydeo.controller;
 
 import com.cydeo.dto.TaskDTO;
+import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
+import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.service.TaskService;
+import com.cydeo.service.UserServiceClient;
+import com.cydeo.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +17,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+    private final UserServiceClient userServiceClient;
+    private final MapperUtil mapper;
 
     @GetMapping
     public ResponseEntity<ResponseWrapper> getTasks(){
@@ -68,6 +72,20 @@ public class TaskController {
     public ResponseEntity<ResponseWrapper> employeeArchivedTasks(){
         List<TaskDTO> taskDTOS = taskService.listAllTasksByStatus(Status.COMPLETE);
         return ResponseEntity.ok(new ResponseWrapper("Tasks are successfully retrieved",taskDTOS,HttpStatus.OK));
+    }
+
+    @GetMapping("/manager/read-all-by-assigned-manager/{username}")
+    public ResponseEntity<ResponseWrapper> readAllByEmployee (@PathVariable("username")String username){
+        UserDTO userDTO = userServiceClient.getUserDTOByUserName(username).data;
+        User user = mapper.convert(userDTO, new User());
+
+        return ResponseEntity.ok(ResponseWrapper.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Projects are successfully retrieved")
+                .data(taskService.readAllByAssignedEmployee(user))
+                .build()
+        );
     }
 
 
