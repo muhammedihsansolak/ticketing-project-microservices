@@ -34,6 +34,11 @@ spring:
       probability: 1
   zipkin:
     base-url: http://host.docker.internal:9411
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://host.docker.internal:8080/auth/realms/master/protocol/openid-connect/certs
 
 eureka:
   instance:
