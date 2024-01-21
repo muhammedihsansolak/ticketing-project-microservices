@@ -10,7 +10,7 @@ spring:
           uri: https://github.com/muhammedihsansolak/ticketing-project-microservices-config.git
           default-label: master
           username: Muhammed ihsan solak
-          password: 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
+          password: ${GIT_TOKEN}
       fail-fast: true
 
 server:
